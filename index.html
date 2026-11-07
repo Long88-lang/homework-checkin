@@ -3,49 +3,102 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>11月7日（星期六）作业打卡</title>
+<title>作业打卡</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f5f9; color: #222; padding: 16px 14px 40px; }
-  .card { max-width: 560px; margin: 0 auto; background: #fff; border-radius: 16px; padding: 20px 18px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
-  .tag { display: inline-block; background: #e8f0fe; color: #1a73e8; font-size: 13px; padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; }
+  :root {
+    --main: #1a73e8; --main-soft: #e8f0fe; --bg: #eaf2fb; --accent: #ffb703;
+    --badge-bg: linear-gradient(135deg, #1a73e8, #00b4d8);
+  }
+  body.girl {
+    --main: #e75480; --main-soft: #fdeef3; --bg: #fdf0f4; --accent: #ff8fb3;
+    --badge-bg: linear-gradient(135deg, #e75480, #b388ff);
+  }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); color: #222; padding: 16px 14px 48px; transition: background .3s; }
+  .card { max-width: 560px; margin: 0 auto; background: #fff; border-radius: 20px; padding: 20px 18px; box-shadow: 0 4px 18px rgba(0,0,0,.08); }
+  .mode-row { display: flex; gap: 10px; margin-bottom: 14px; }
+  .mode-btn { flex: 1; padding: 10px; border-radius: 12px; border: 2px solid #ddd; background: #fff; font-size: 15px; cursor: pointer; color: #555; }
+  .mode-btn.active-boy { border-color: #1a73e8; background: #e8f0fe; color: #1a73e8; font-weight: bold; }
+  .mode-btn.active-girl { border-color: #e75480; background: #fdeef3; color: #e75480; font-weight: bold; }
+  .tag { display: inline-block; background: var(--main-soft); color: var(--main); font-size: 13px; padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; }
   h1 { font-size: 22px; line-height: 1.4; margin-bottom: 6px; }
-  .sub { color: #666; font-size: 14px; line-height: 1.7; margin-bottom: 16px; }
+  .sub { color: #666; font-size: 14px; line-height: 1.7; margin-bottom: 14px; }
+  .stats { display: flex; gap: 10px; margin-bottom: 16px; }
+  .stat { flex: 1; background: var(--main-soft); border-radius: 12px; padding: 10px 6px; text-align: center; }
+  .stat b { display: block; font-size: 20px; color: var(--main); }
+  .stat span { font-size: 12px; color: #666; }
   .progress-wrap { background: #eef1f5; border-radius: 10px; height: 12px; overflow: hidden; margin-bottom: 8px; }
-  .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #34a853, #1a73e8); border-radius: 10px; transition: width .3s; }
-  .progress-text { font-size: 14px; color: #555; margin-bottom: 18px; }
-  .group { font-size: 15px; font-weight: bold; color: #1a73e8; margin: 18px 0 8px; }
-  .task { display: flex; align-items: flex-start; gap: 12px; padding: 13px 12px; border: 1px solid #e5e8ec; border-radius: 12px; margin-bottom: 10px; cursor: pointer; background: #fff; }
-  .task.done { background: #f0f7f0; border-color: #b7dfc0; }
-  .box { flex: none; width: 26px; height: 26px; border: 2px solid #bbb; border-radius: 7px; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #fff; background: #fff; }
-  .task.done .box { background: #34a853; border-color: #34a853; }
+  .progress-bar { height: 100%; width: 0%; background: var(--badge-bg); border-radius: 10px; transition: width .3s; }
+  .progress-text { font-size: 14px; color: #555; margin-bottom: 6px; }
+  .praise { font-size: 14px; color: var(--main); min-height: 20px; margin-bottom: 10px; }
+  .group { font-size: 15px; font-weight: bold; color: var(--main); margin: 18px 0 8px; }
+  .task { display: flex; align-items: flex-start; gap: 12px; padding: 13px 12px; border: 1px solid #e5e8ec; border-radius: 14px; margin-bottom: 10px; cursor: pointer; background: #fff; transition: transform .12s; }
+  .task:active { transform: scale(.98); }
+  .task.done { background: var(--main-soft); border-color: var(--main); }
+  .box { flex: none; width: 28px; height: 28px; border: 2px solid #bbb; border-radius: 9px; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #fff; background: #fff; }
+  .task.done .box { background: var(--main); border-color: var(--main); }
   .task-text b { font-size: 15px; display: block; margin-bottom: 2px; }
   .task.done .task-text b { text-decoration: line-through; color: #888; }
   .task-text span { font-size: 13px; color: #777; line-height: 1.5; }
+  .star-tag { margin-left: auto; flex: none; font-size: 13px; color: var(--accent); font-weight: bold; }
   .optional { font-size: 13px; color: #888; border-top: 1px dashed #ddd; margin-top: 20px; padding-top: 14px; line-height: 1.8; }
-  .celebrate { display: none; text-align: center; background: #fff7e0; border: 1px solid #ffd666; border-radius: 12px; padding: 16px; margin-top: 18px; font-size: 16px; line-height: 1.7; }
-  .celebrate.show { display: block; }
   .reset { display: block; margin: 22px auto 0; background: none; border: none; color: #999; font-size: 13px; text-decoration: underline; cursor: pointer; }
   .saved-note { text-align: center; color: #999; font-size: 12px; margin-top: 14px; }
+  .modal { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: rgba(0,0,0,.45); align-items: center; justify-content: center; z-index: 10; padding: 20px; }
+  .modal.show { display: flex; }
+  .modal-box { background: #fff; border-radius: 20px; padding: 28px 22px; text-align: center; max-width: 340px; width: 100%; animation: pop .3s; }
+  @keyframes pop { from { transform: scale(.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .badge-emblem { width: 92px; height: 92px; margin: 0 auto 12px; border-radius: 50%; background: var(--badge-bg); display: flex; align-items: center; justify-content: center; font-size: 46px; color: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+  .modal-box h2 { font-size: 20px; margin-bottom: 8px; }
+  .modal-box p { font-size: 14px; color: #666; line-height: 1.7; margin-bottom: 16px; }
+  .modal-btn { background: var(--main); color: #fff; border: none; border-radius: 12px; padding: 12px 28px; font-size: 16px; cursor: pointer; }
 </style>
 </head>
 <body>
 <div class="card">
-  <div class="tag">电子版示例 · 点开就能打卡</div>
-  <h1>11月7日（星期六）作业打卡</h1>
-  <p class="sub">示例学员「小宇」· 6岁 · 大班<br>今天总量约 53 分钟，周六下午还有活动，所以安排得轻一点。</p>
+  <div class="mode-row">
+    <button class="mode-btn" id="boyBtn">男孩版 · 蓝色</button>
+    <button class="mode-btn" id="girlBtn">女孩版 · 粉色</button>
+  </div>
+  <div class="tag">电子版打卡 · 点开就能用</div>
+  <h1 id="title">11月7日（星期六）作业打卡</h1>
+  <p class="sub" id="subtitle">示例学员「小宇」· 6岁 · 大班<br>今天总量约 53 分钟，周六下午还有活动，所以安排得轻一点。</p>
+  <div class="stats">
+    <div class="stat"><b id="streakNum">0</b><span>连续打卡（天）</span></div>
+    <div class="stat"><b id="starNum">0</b><span>我的星星</span></div>
+    <div class="stat"><b id="levelName">小新星</b><span>当前等级</span></div>
+  </div>
   <div class="progress-wrap"><div class="progress-bar" id="bar"></div></div>
   <p class="progress-text" id="progressText">已完成 0 / 8 项 · 还剩约 53 分钟</p>
+  <p class="praise" id="praise"></p>
   <div id="tasks"></div>
-  <div class="celebrate" id="celebrate">🎉 今天全部完成，太棒了！<br>小宇今天真厉害，明天继续加油！</div>
   <div class="optional">
     <b>按需推荐（可选，不计入全部完成）：</b><br>
     · 跟读一首英文儿歌 5 分钟<br>
     · 认读 5 个汉字
   </div>
   <button class="reset" id="resetBtn">重新开始今天的打卡</button>
-  <p class="saved-note">打勾会自动保存在这部手机上，退出再打开还在。</p>
+  <p class="saved-note">打勾和星星会自动保存在这部手机上，退出再打开还在。</p>
 </div>
+
+<div class="modal" id="badgeModal">
+  <div class="modal-box">
+    <div class="badge-emblem" id="badgeEmblem">★</div>
+    <h2 id="badgeTitle">获得超级英雄徽章！</h2>
+    <p id="badgeText">你完成了一项任务，超级英雄为你点赞！</p>
+    <button class="modal-btn" id="badgeClose">继续打卡</button>
+  </div>
+</div>
+
+<div class="modal" id="winModal">
+  <div class="modal-box">
+    <div class="badge-emblem" id="winEmblem">★</div>
+    <h2 id="winTitle">今天全部完成！</h2>
+    <p id="winText">太棒了！你集满了今天的星星。</p>
+    <button class="modal-btn" id="winClose">收下我的勋章</button>
+  </div>
+</div>
+
 <script>
 var TASKS = [
   { group: "英语", title: "英语单词跟读 10 分钟", desc: "跟着音频读 10 个单词，每个读 3 遍", mins: 10 },
@@ -57,9 +110,31 @@ var TASKS = [
   { group: "写字练习", title: "练字 5 分钟", desc: "认真写 5 个生字，写得工整", mins: 5 },
   { group: "写字练习", title: "整理书包和作业本", desc: "明天要用的东西自己收好", mins: 0 }
 ];
-var KEY = "homework-checkin-2026-11-07-xiaoyu";
-var done = {};
-try { done = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { done = {}; }
+var PRAISES = ["做得好！又前进了一步！", "太厉害了，继续冲！", "你比昨天更棒了！", "这一项也拿下了！", "坚持就是胜利，你做到了！", "哇，这个速度真快！"];
+var DATE = "2026-11-07";
+var store = { mode: "boy", done: {}, stars: 0, streak: 0, lastWin: "" };
+try { var s = JSON.parse(localStorage.getItem("homework-checkin-v2") || "null"); if (s) store = s; } catch (e) {}
+function save() { try { localStorage.setItem("homework-checkin-v2", JSON.stringify(store)); } catch (e) {} }
+function isGirl() { return store.mode === "girl"; }
+function levelFor(stars) {
+  if (stars >= 30) return isGirl() ? "冰雪小公主" : "打卡小超人";
+  if (stars >= 15) return "打卡小达人";
+  if (stars >= 5) return "小明星";
+  return "小新星";
+}
+function applyMode() {
+  document.body.classList.toggle("girl", isGirl());
+  document.getElementById("boyBtn").className = "mode-btn" + (isGirl() ? "" : " active-boy");
+  document.getElementById("girlBtn").className = "mode-btn" + (isGirl() ? " active-girl" : "");
+  document.getElementById("subtitle").innerHTML = isGirl()
+    ? "示例学员「小朵」· 6岁 · 大班<br>今天总量约 53 分钟，周六下午还有活动，所以安排得轻一点。"
+    : "示例学员「小宇」· 6岁 · 大班<br>今天总量约 53 分钟，周六下午还有活动，所以安排得轻一点。";
+  document.getElementById("badgeEmblem").textContent = isGirl() ? "❄" : "★";
+  document.getElementById("winEmblem").textContent = isGirl() ? "❄" : "★";
+  render();
+}
+document.getElementById("boyBtn").onclick = function () { store.mode = "boy"; save(); applyMode(); };
+document.getElementById("girlBtn").onclick = function () { store.mode = "girl"; save(); applyMode(); };
 var box = document.getElementById("tasks");
 var currentGroup = "";
 TASKS.forEach(function (t, i) {
@@ -71,34 +146,77 @@ TASKS.forEach(function (t, i) {
     box.appendChild(g);
   }
   var d = document.createElement("div");
-  d.className = "task" + (done[i] ? " done" : "");
-  d.innerHTML = '<div class="box">' + (done[i] ? "✓" : "") + '</div>' +
-    '<div class="task-text"><b>' + t.title + '</b><span>' + t.desc + (t.mins ? " · 约 " + t.mins + " 分钟" : "") + '</span></div>';
-  d.onclick = function () {
-    done[i] = !done[i];
-    if (!done[i]) delete done[i];
-    try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {}
-    d.classList.toggle("done", !!done[i]);
-    d.querySelector(".box").textContent = done[i] ? "✓" : "";
-    render();
-  };
+  d.className = "task";
+  d.id = "task-" + i;
+  d.innerHTML = '<div class="box"></div>' +
+    '<div class="task-text"><b>' + t.title + '</b><span>' + t.desc + (t.mins ? " · 约 " + t.mins + " 分钟" : "") + '</span></div>' +
+    '<div class="star-tag">+1 ★</div>';
+  d.onclick = function () { toggleTask(i); };
   box.appendChild(d);
 });
-function render() {
+function todayDone() { return store.done[DATE] || {}; }
+function toggleTask(i) {
+  var done = todayDone();
+  var wasDone = !!done[i];
+  if (wasDone) { delete done[i]; store.stars = Math.max(0, store.stars - 1); }
+  else {
+    done[i] = true; store.stars += 1;
+    document.getElementById("praise").textContent = PRAISES[Math.floor(Math.random() * PRAISES.length)];
+    showBadge();
+  }
+  store.done[DATE] = done;
+  save(); render();
   var count = Object.keys(done).length;
-  var totalMins = 0, leftMins = 0;
-  TASKS.forEach(function (t, i) { totalMins += t.mins; if (!done[i]) leftMins += t.mins; });
+  if (!wasDone && count === TASKS.length && store.lastWin !== DATE) {
+    store.lastWin = DATE;
+    var yesterday = new Date("2026-11-07"); yesterday.setDate(yesterday.getDate() - 1);
+    var y = yesterday.toISOString().slice(0, 10);
+    store.streak = (store.lastWin === DATE && store.done[y] && Object.keys(store.done[y]).length === TASKS.length) ? store.streak + 1 : 1;
+    store.stars += 2;
+    save(); render(); showWin();
+  }
+}
+function showBadge() {
+  document.getElementById("badgeTitle").textContent = isGirl() ? "获得冰雪公主徽章！" : "获得超级英雄徽章！";
+  document.getElementById("badgeText").textContent = isGirl()
+    ? "雪花为你闪耀！冰雪公主说你今天特别棒！"
+    : "超级英雄为你点赞！你今天特别勇敢！";
+  document.getElementById("badgeModal").classList.add("show");
+}
+function showWin() {
+  document.getElementById("winTitle").textContent = "今天全部完成！";
+  document.getElementById("winText").textContent = isGirl()
+    ? "你集满了今天的星星，冰雪公主给你戴上皇冠！"
+    : "你集满了今天的星星，超级英雄给你颁发勋章！";
+  document.getElementById("winModal").classList.add("show");
+}
+document.getElementById("badgeClose").onclick = function () { document.getElementById("badgeModal").classList.remove("show"); };
+document.getElementById("winClose").onclick = function () { document.getElementById("winModal").classList.remove("show"); };
+function render() {
+  var done = todayDone();
+  var count = Object.keys(done).length;
+  var leftMins = 0;
+  TASKS.forEach(function (t, i) { if (!done[i]) leftMins += t.mins; });
   document.getElementById("bar").style.width = (count / TASKS.length * 100) + "%";
   document.getElementById("progressText").textContent = "已完成 " + count + " / " + TASKS.length + " 项 · 还剩约 " + leftMins + " 分钟";
-  document.getElementById("celebrate").classList.toggle("show", count === TASKS.length);
+  document.getElementById("streakNum").textContent = store.streak;
+  document.getElementById("starNum").textContent = store.stars;
+  document.getElementById("levelName").textContent = levelFor(store.stars);
+  TASKS.forEach(function (t, i) {
+    var el = document.getElementById("task-" + i);
+    el.classList.toggle("done", !!done[i]);
+    el.querySelector(".box").textContent = done[i] ? "✓" : "";
+  });
 }
 document.getElementById("resetBtn").onclick = function () {
-  if (!confirm("确定要清空今天的打勾记录，重新开始吗？")) return;
-  done = {};
-  try { localStorage.removeItem(KEY); } catch (e) {}
-  location.reload();
+  if (!confirm("确定要清空今天的打勾记录，重新开始吗？星星会扣掉今天得的。")) return;
+  var done = todayDone();
+  store.stars = Math.max(0, store.stars - Object.keys(done).length);
+  store.done[DATE] = {};
+  if (store.lastWin === DATE) { store.lastWin = ""; store.streak = Math.max(0, store.streak - 1); }
+  save(); render();
 };
-render();
+applyMode();
 </script>
 </body>
 </html>
