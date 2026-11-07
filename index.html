@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>11月7日（星期六）作业打卡</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f2f5f9; color: #222; padding: 16px 14px 40px; }
+  .card { max-width: 560px; margin: 0 auto; background: #fff; border-radius: 16px; padding: 20px 18px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+  .tag { display: inline-block; background: #e8f0fe; color: #1a73e8; font-size: 13px; padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; }
+  h1 { font-size: 22px; line-height: 1.4; margin-bottom: 6px; }
+  .sub { color: #666; font-size: 14px; line-height: 1.7; margin-bottom: 16px; }
+  .progress-wrap { background: #eef1f5; border-radius: 10px; height: 12px; overflow: hidden; margin-bottom: 8px; }
+  .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #34a853, #1a73e8); border-radius: 10px; transition: width .3s; }
+  .progress-text { font-size: 14px; color: #555; margin-bottom: 18px; }
+  .group { font-size: 15px; font-weight: bold; color: #1a73e8; margin: 18px 0 8px; }
+  .task { display: flex; align-items: flex-start; gap: 12px; padding: 13px 12px; border: 1px solid #e5e8ec; border-radius: 12px; margin-bottom: 10px; cursor: pointer; background: #fff; }
+  .task.done { background: #f0f7f0; border-color: #b7dfc0; }
+  .box { flex: none; width: 26px; height: 26px; border: 2px solid #bbb; border-radius: 7px; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #fff; background: #fff; }
+  .task.done .box { background: #34a853; border-color: #34a853; }
+  .task-text b { font-size: 15px; display: block; margin-bottom: 2px; }
+  .task.done .task-text b { text-decoration: line-through; color: #888; }
+  .task-text span { font-size: 13px; color: #777; line-height: 1.5; }
+  .optional { font-size: 13px; color: #888; border-top: 1px dashed #ddd; margin-top: 20px; padding-top: 14px; line-height: 1.8; }
+  .celebrate { display: none; text-align: center; background: #fff7e0; border: 1px solid #ffd666; border-radius: 12px; padding: 16px; margin-top: 18px; font-size: 16px; line-height: 1.7; }
+  .celebrate.show { display: block; }
+  .reset { display: block; margin: 22px auto 0; background: none; border: none; color: #999; font-size: 13px; text-decoration: underline; cursor: pointer; }
+  .saved-note { text-align: center; color: #999; font-size: 12px; margin-top: 14px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="tag">电子版示例 · 点开就能打卡</div>
+  <h1>11月7日（星期六）作业打卡</h1>
+  <p class="sub">示例学员「小宇」· 6岁 · 大班<br>今天总量约 53 分钟，周六下午还有活动，所以安排得轻一点。</p>
+  <div class="progress-wrap"><div class="progress-bar" id="bar"></div></div>
+  <p class="progress-text" id="progressText">已完成 0 / 8 项 · 还剩约 53 分钟</p>
+  <div id="tasks"></div>
+  <div class="celebrate" id="celebrate">🎉 今天全部完成，太棒了！<br>小宇今天真厉害，明天继续加油！</div>
+  <div class="optional">
+    <b>按需推荐（可选，不计入全部完成）：</b><br>
+    · 跟读一首英文儿歌 5 分钟<br>
+    · 认读 5 个汉字
+  </div>
+  <button class="reset" id="resetBtn">重新开始今天的打卡</button>
+  <p class="saved-note">打勾会自动保存在这部手机上，退出再打开还在。</p>
+</div>
+<script>
+var TASKS = [
+  { group: "英语", title: "英语单词跟读 10 分钟", desc: "跟着音频读 10 个单词，每个读 3 遍", mins: 10 },
+  { group: "英语", title: "英语绘本阅读 15 分钟", desc: "读一本英文绘本，试着讲给爸爸妈妈听", mins: 15 },
+  { group: "数学", title: "10 以内加减口算 10 道", desc: "口算 10 道题，做对 8 道以上就算过关", mins: 8 },
+  { group: "数学", title: "凑十法小练习 5 分钟", desc: "6+4、7+3、8+2，说一说怎么凑成 10", mins: 5 },
+  { group: "语文", title: "拼音认读 5 分钟", desc: "认读声母韵母卡片 10 张", mins: 5 },
+  { group: "语文", title: "古诗背诵一首", desc: "背一首正在学的古诗，能流利背下来", mins: 5 },
+  { group: "写字练习", title: "练字 5 分钟", desc: "认真写 5 个生字，写得工整", mins: 5 },
+  { group: "写字练习", title: "整理书包和作业本", desc: "明天要用的东西自己收好", mins: 0 }
+];
+var KEY = "homework-checkin-2026-11-07-xiaoyu";
+var done = {};
+try { done = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { done = {}; }
+var box = document.getElementById("tasks");
+var currentGroup = "";
+TASKS.forEach(function (t, i) {
+  if (t.group !== currentGroup) {
+    currentGroup = t.group;
+    var g = document.createElement("div");
+    g.className = "group";
+    g.textContent = currentGroup;
+    box.appendChild(g);
+  }
+  var d = document.createElement("div");
+  d.className = "task" + (done[i] ? " done" : "");
+  d.innerHTML = '<div class="box">' + (done[i] ? "✓" : "") + '</div>' +
+    '<div class="task-text"><b>' + t.title + '</b><span>' + t.desc + (t.mins ? " · 约 " + t.mins + " 分钟" : "") + '</span></div>';
+  d.onclick = function () {
+    done[i] = !done[i];
+    if (!done[i]) delete done[i];
+    try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {}
+    d.classList.toggle("done", !!done[i]);
+    d.querySelector(".box").textContent = done[i] ? "✓" : "";
+    render();
+  };
+  box.appendChild(d);
+});
+function render() {
+  var count = Object.keys(done).length;
+  var totalMins = 0, leftMins = 0;
+  TASKS.forEach(function (t, i) { totalMins += t.mins; if (!done[i]) leftMins += t.mins; });
+  document.getElementById("bar").style.width = (count / TASKS.length * 100) + "%";
+  document.getElementById("progressText").textContent = "已完成 " + count + " / " + TASKS.length + " 项 · 还剩约 " + leftMins + " 分钟";
+  document.getElementById("celebrate").classList.toggle("show", count === TASKS.length);
+}
+document.getElementById("resetBtn").onclick = function () {
+  if (!confirm("确定要清空今天的打勾记录，重新开始吗？")) return;
+  done = {};
+  try { localStorage.removeItem(KEY); } catch (e) {}
+  location.reload();
+};
+render();
+</script>
+</body>
+</html>
